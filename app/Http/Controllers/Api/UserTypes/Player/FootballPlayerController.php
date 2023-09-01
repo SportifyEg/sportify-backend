@@ -1,25 +1,34 @@
 <?php
 
-namespace App\Http\Controllers\Api\UserTypes;
+namespace App\Http\Controllers\Api\UserTypes\Player;
 
 
+use Illuminate\Http\Request;
 use App\Models\FootballPlayer;
 use App\Helpers\HelpersFunctions;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserType\StorePlayerRequest;
 
 
 class FootballPlayerController extends Controller
 {
-    public function storeFootballPlayer(StorePlayerRequest $request ) :JsonResponse
+    public function storeFootballPlayer(Request $request) :JsonResponse
     {
-        $data = $request->validated();
+        // check user type on table
+        $user = $request->user();
+        // $checkType = HelpersFunctions::checkUserType(new FootballPlayer , $user);
+        // if ($checkType) {
+        //     return $this->finalResponse('failed',400,null,null,'you already player');
+        // }
+        // vailate data profile
+        $data = $request->validate(FootballPlayer::rules());
+
+        // store data_file in server
         $file = $request->file('cv');
         $path = HelpersFunctions::storeFile($file,'player');
 
         $create = FootballPlayer::create([
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'country'=> $data['country'],
             'city'=> $data['city'],
             'age'=> $data['age'],
@@ -34,7 +43,9 @@ class FootballPlayerController extends Controller
             // 'possibility_travel'=> $data['possibility_travel'],
             'cv' => $path
         ]);
-        if($create)
+        $user->role = 'player';
+        $user->save();
+        if($create && $path)
         {
             return $this->finalResponse('success',200,'data created successfully');
         }
@@ -42,4 +53,12 @@ class FootballPlayerController extends Controller
         return $this->finalResponse('failed',400,null,null,'something failed in server');
 
     }
+
+
+    public function updateFootballPlayer(Request $request) : JsonResponse
+    {
+        return $this->finalResponse('failed',400,null,null,'something failed in server');
+
+    }
+
 }

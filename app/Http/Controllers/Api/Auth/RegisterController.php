@@ -43,12 +43,14 @@ class RegisterController extends Controller
 
         $credentials = $request->only('email','password');
         $request->merge(['password' => Hash::make($request->password)]);
-
+        $username = explode('@', $request->email)[0];
         $user = User::create([
             'name' => $request->name,
+            'username' => $username,
             'email' => $request->email,
             'password' => $request->password,
-            'phone' => $request->phone
+            'phone' => $request->phone ,
+            'role' => 'no_role',
         ]);
 
         $createOtp = new HelperVerificationUser($user, new Otp);
@@ -59,7 +61,7 @@ class RegisterController extends Controller
                 Mail::to($user->email)->send(new SendOTP($user->name, $otp->otp, $date));
                 return $this->finalResponse('success', 200,'please check your mail');
             }
-        
+
         return $this->finalResponse("user created successfully",200);
 
     }

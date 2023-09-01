@@ -31,7 +31,7 @@ class LoginFacebookController extends Controller
         if(!$user)
         {
             $user = User::create([
-                'name' => $userProviderName,
+                'username' => $userProviderName,
                 'provider_name' => 'facebook',
                 'provider_id' => $userProviderId,
                 'avatar' => "https://graph.facebook.com/v3.3/$userProviderId/picture?type=large&access_token=$token"

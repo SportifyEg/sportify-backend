@@ -1,10 +1,13 @@
 <?php
 namespace App\Helpers;
 
+use App\Models\FootballCoach;
+use App\Models\FootballPlayer;
 use Vonage\Client;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Vonage\Client\Credentials\Basic;
+use Illuminate\Database\Eloquent\Model;
 
 class HelpersFunctions
 {
@@ -66,5 +69,11 @@ class HelpersFunctions
         return $path;
     }
 
+
+    public static function checkUserType (Model $model ,User $user) : bool
+    {
+        $check = $model->where('user_id',$user->id)->first();
+        return $check ? true : false;
+    }
 }
 ?>

@@ -29,7 +29,7 @@ class LoginGoogleController extends Controller
         if(!$user)
         {
             $user = User::create([
-                'name' => $userProviderName,
+                'username' => $userProviderName,
                 'provider_name' => 'google',
                 'provider_id' => $userProviderId,
                 'avatar' => $providerUser->getAvatar()
